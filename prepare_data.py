@@ -7,12 +7,12 @@ DATA_PAD = "data/synthetic_news_data.csv"
 
 
 def load_data(pad=DATA_PAD):
-    """Laadt de dataset en geeft een DataFrame terug."""
+    
     return pd.read_csv(pad)
 
 
 def show(df):
-    """Print een overzicht om de data te leren kennen."""
+    
     print(df.shape)
     print(df.head())
     print(df.dtypes)
@@ -22,7 +22,7 @@ def show(df):
 
 
 def check_data(df):
-    """Print controles om de kolommen en het label te begrijpen."""
+
     print(df["sup"].value_counts())
     print(df["alert"].value_counts())
     print(df[df["dias"] >= df["syst"]])
@@ -42,7 +42,7 @@ GRENZEN = {
 
 
 def find_impossible_value(df, grenzen=GRENZEN):
-    """Geeft de rijen terug waarin een waarde buiten de grenzen valt."""
+    
     buiten = pd.Series(False, index=df.index)
     for kolom, (laag, hoog) in grenzen.items():
         buiten |= (df[kolom] < laag) | (df[kolom] > hoog)
@@ -50,7 +50,7 @@ def find_impossible_value(df, grenzen=GRENZEN):
 
 
 def clean_data(df):
-    """Rondt temperatuur af en haalt rijen met onmogelijke waarden weg."""
+    
     df = df.copy()
     df["temp"] = df["temp"].round(1)
     onmogelijk = find_impossible_value(df)
