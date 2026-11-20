@@ -4,7 +4,8 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.width", 200)
 
 DATA_PAD = "data/synthetic_news_data.csv"
-
+LABEL = "died"
+BASELINE = "NEWS"
 
 def load_data(pad=DATA_PAD):
     
@@ -56,6 +57,10 @@ def clean_data(df):
     onmogelijk = find_impossible_value(df)
     return df.drop(index=onmogelijk.index)
 
+def split_features_label(df):
+    y = df[LABEL]
+    X = df.drop(columns=[LABEL, BASELINE])
+    return X, y
 
 if __name__ == "__main__":
     df = load_data()
@@ -64,3 +69,6 @@ if __name__ == "__main__":
     print(find_impossible_value(df))
     df = clean_data(df)
     print(df.shape)
+    X, y = split_features_label(df)
+    print(X.columns.tolist())
+    print(y.value_counts())
