@@ -30,8 +30,37 @@ def check_data(df):
     print(df.groupby("died")[["age", "NEWS", "pulse", "resp", "sat", "temp", "syst"]].mean())
     print(df.groupby("NEWS")["died"].mean())
 
+GRENZEN = {
+    "age": (0, 120),
+    "syst": (50, 260),
+    "dias": (10, 150),
+    "temp": (30, 45),
+    "pulse": (20, 250),
+    "resp": (4, 60),
+    "sat": (50, 100),
+}
+
+
+def find_impossible_value(df, grenzen=GRENZEN):
+    """Geeft de rijen terug waarin een waarde buiten de grenzen valt."""
+    buiten = pd.Series(False, index=df.index)
+    for kolom, (laag, hoog) in grenzen.items():
+        buiten |= (df[kolom] < laag) | (df[kolom] > hoog)
+    return df[buiten]
+
+
+def clean_data(df):
+    """Rondt temperatuur af en haalt rijen met onmogelijke waarden weg."""
+    df = df.copy()
+    df["temp"] = df["temp"].round(1)
+    onmogelijk = find_impossible_value(df)
+    return df.drop(index=onmogelijk.index)
+
 
 if __name__ == "__main__":
     df = load_data()
     show(df)
     check_data(df)
+    print(find_impossible_value(df))
+    df = clean_data(df)
+    print(df.shape)
